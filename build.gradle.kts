@@ -21,6 +21,12 @@ dependencies {
     implementation(files("libs/processing-4.3_library/core.jar"))
     implementation(files("libs/processing-4.3_library/gluegen-rt.jar"))
     implementation(files("libs/processing-4.3_library/jogl-all.jar"))
+    implementation(files("libs/minim/minim.jar"))
+    implementation(files("libs/minim/jsminim.jar"))
+    implementation(files("libs/minim/mp3spi1.9.5.jar"))
+    implementation(files("libs/minim/jl1.0.1.jar"))
+    implementation(files("libs/minim/tritonus_aos.jar"))
+    implementation(files("libs/minim/tritonus_share.jar"))
 }
 
 tasks.test {

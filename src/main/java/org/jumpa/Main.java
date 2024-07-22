@@ -4,14 +4,15 @@ import hype.H;
 import hype.HBox;
 import hype.extended.behavior.HOscillator;
 import hype.extended.layout.HCircleLayout;
+import org.jumpa.phwrapper.Audio;
 import org.jumpa.phwrapper.Wrapper;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
 public class Main extends Wrapper {
-
-    int clrBg = 0xCCCCCC;
+    Audio audio = new Audio(this);
+    int clrBg = 0x00000;
 
     int numItems = 70;
 
@@ -22,8 +23,11 @@ public class Main extends Wrapper {
     HCircleLayout layout;
     HBox[] obj = new HBox[numItems];// this is the obj where we store the grid behavior
 
+    boolean showAudioVisualizer = true;
+
     public void setup() {
         H.init(this);
+        audio.setup();
         background(clrBg);
 
         colors = loadImage(dataPath + "colors/rainbow.png");
@@ -54,6 +58,7 @@ public class Main extends Wrapper {
 
     public void draw() {
         background(clrBg);
+        audio.update();
 
         // image(colors, 0, 0, width, 50);
         lights();
@@ -64,11 +69,31 @@ public class Main extends Wrapper {
             osc[i].run();
             oscR[i].run();
             obj[i].noStroke();
-            obj[i].fill(colors.get((int)(osc[i].curr()), 0));
+            obj[i].fill(colors.get((int) (osc[i].curr()), 0));
             obj[i].rotationZ(oscR[i].curr());
             // obj[i].rotationX(oscR[i].curr());
-            obj[i].draw(this.g);
+//            obj[i].draw(this.g);
         }
+        if (showAudioVisualizer) audio.visualizer();
         pop();
+    }
+
+    public void keyPressed() {
+        if (key == 'v') {
+            showAudioVisualizer = !showAudioVisualizer;
+        }
+        if (key == ' ') {
+            if (audio.player.isPlaying()) audio.player.pause();
+            else audio.player.play();
+        }
+        if (key == 'm') {
+            if (audio.player.isMuted()) audio.player.unmute();
+            else audio.player.mute();
+        }
+        if (key == 'p') {
+            for (int i = 0; i < audio.peakAudioData.length; i++) {
+                println(audio.peakAudioData[i]);
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ public class Wrapper extends PApplet {
 
     public static String appName = "org.jumpa.Main";
 
-    public String dataPath = "../data/";
+    public static String dataPath = "../data/";
 
     public void settings() {
         size(stageW, stageH, P3D);

@@ -10,13 +10,14 @@ public class Audio {
     boolean useInput = false;
     boolean showPeakAudioData = false;
     boolean showReferenceAudioData = false;
+    public boolean showAudioVisualizer = true;
 
     Minim minim;
     PApplet app;
     AudioInput in;
     FFT fft;
 
-    int audioRange = 32;
+    public int audioRange = 32;
     int barWidth = 8;
     int barGap = 1;
     int barMinHeight = 2;
@@ -109,8 +110,17 @@ public class Audio {
     }
 
     public void visualizer() {
+        if (!showAudioVisualizer) return;
+
+        app.noLights();
+        app.noTint();
+        app.hint(app.DISABLE_DEPTH_TEST);
+        app.hint(app.DISABLE_DEPTH_SORT);
+        app.perspective();
+
         app.rectMode(app.CENTER);
         app.push();
+        app.translate((app.width / 2), (app.height / 2), 0);
         app.translate(-((float) audioRange / 2 * (barWidth + barGap)), (float) app.height / 2 - 100);
         app.noStroke();
         for (int i = 0; i < audioRange; i++) {
@@ -130,11 +140,13 @@ public class Audio {
             }
 
             app.textAlign(app.CENTER, app.CENTER);
-            app.textSize(12);
+            app.textSize(8);
             app.text(i, i * (barWidth + barGap), 60);
         }
         app.pop();
         app.rectMode(app.CORNER);
+
+        app.hint(app.ENABLE_DEPTH_TEST);
     }
 
     public void stop() {

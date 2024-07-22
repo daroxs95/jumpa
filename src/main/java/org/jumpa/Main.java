@@ -1,59 +1,29 @@
 package org.jumpa;
 
 import hype.H;
-import hype.HBox;
-import hype.extended.behavior.HOscillator;
-import hype.extended.layout.HCircleLayout;
+import org.jumpa.effects.CenterSphere;
+import org.jumpa.effects.ColorfulButterfly;
 import org.jumpa.phwrapper.Audio;
+import org.jumpa.phwrapper.Effect;
 import org.jumpa.phwrapper.Wrapper;
-import processing.core.PApplet;
-import processing.core.PImage;
-import processing.core.PVector;
+
+import java.util.ArrayList;
 
 public class Main extends Wrapper {
     Audio audio = new Audio(this);
+    ArrayList<Effect> effects = new ArrayList<>();
+
     int clrBg = 0x00000;
-
-    int numItems = 70;
-
-    PImage colors;
-    HOscillator[] osc = new HOscillator[numItems];
-    HOscillator[] oscR = new HOscillator[numItems];
-
-    HCircleLayout layout;
-    HBox[] obj = new HBox[numItems];// this is the obj where we store the grid behavior
-
-    boolean showAudioVisualizer = true;
 
     public void setup() {
         H.init(this);
         audio.setup();
         background(clrBg);
 
-        colors = loadImage(dataPath + "colors/rainbow.png");
+        effects.add(new CenterSphere(audio, this));
+        effects.add(new ColorfulButterfly(audio, this));
 
-        layout = new HCircleLayout();
-        layout.angleStep(360 / numItems).radius(30);
-
-        for (int i = 0; i < numItems; ++i) {
-            PVector _p = layout.getNextPoint();
-
-            obj[i] = new HBox();
-            obj[i].loc(_p.x, _p.y, _p.z);
-            obj[i].size(20, 2000, 20);
-
-            obj[i].rotate(layout.angleStep() * i);
-
-            osc[i] = new HOscillator()
-                    .range(0, colors.width - 1)
-                    .speed(1).currentStep(i * 10)
-                    .waveform(H.SINE);
-
-            oscR[i] = new HOscillator()
-                    .range(-180, 180)
-                    .speed(1)
-                    .currentStep(i);
-        }
+        effects.forEach(Effect::setup);
     }
 
     public void draw() {
@@ -63,24 +33,28 @@ public class Main extends Wrapper {
         // image(colors, 0, 0, width, 50);
         lights();
 
-        push();
-        translate((width / 2), (height / 2), 0);
-        for (int i = 0; i < numItems; ++i) {
-            osc[i].run();
-            oscR[i].run();
-            obj[i].noStroke();
-            obj[i].fill(colors.get((int) (osc[i].curr()), 0));
-            obj[i].rotationZ(oscR[i].curr());
-            // obj[i].rotationX(oscR[i].curr());
-//            obj[i].draw(this.g);
+        effects.forEach(Effect::update);
+
+        for (int i = 0; i < effects.size(); i++) {
+            noLights();
+            noTint();
+            hint(DISABLE_DEPTH_TEST);
+            hint(DISABLE_DEPTH_SORT);
+            perspective();
+
+            textSize(18);
+            Effect effect = effects.get(i);
+            text(effect.name + ": " + effect.getVariant(), 20, (i + 1) * 22);
+
+            hint(ENABLE_DEPTH_TEST);
         }
-        if (showAudioVisualizer) audio.visualizer();
-        pop();
+
+        audio.visualizer();
     }
 
     public void keyPressed() {
         if (key == 'v') {
-            showAudioVisualizer = !showAudioVisualizer;
+            audio.showAudioVisualizer = !audio.showAudioVisualizer;
         }
         if (key == ' ') {
             if (audio.player.isPlaying()) audio.player.pause();
@@ -94,6 +68,21 @@ public class Main extends Wrapper {
             for (int i = 0; i < audio.peakAudioData.length; i++) {
                 println(audio.peakAudioData[i]);
             }
+        }
+        if (key == '0') {
+            effects.getFirst().nextVariant();
+        }
+        if (key == '1') {
+            effects.get(1).nextVariant();
+        }
+        if (key == '2') {
+            effects.get(2).nextVariant();
+        }
+        if (key == '3') {
+            effects.get(3).nextVariant();
+        }
+        if (key == '4') {
+            effects.get(4).nextVariant();
         }
     }
 }

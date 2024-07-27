@@ -1,8 +1,7 @@
 package org.jumpa;
 
 import hype.H;
-import org.jumpa.effects.CenterSphere;
-import org.jumpa.effects.ColorfulButterfly;
+import org.jumpa.effects.*;
 import org.jumpa.phwrapper.Audio;
 import org.jumpa.phwrapper.Effect;
 import org.jumpa.phwrapper.Wrapper;
@@ -10,79 +9,140 @@ import org.jumpa.phwrapper.Wrapper;
 import java.util.ArrayList;
 
 public class Main extends Wrapper {
-    Audio audio = new Audio(this);
+    Audio audio = new Audio(this, false);
     ArrayList<Effect> effects = new ArrayList<>();
 
     int clrBg = 0x00000;
+    int framesDelayed = 0;
+    boolean showUi = false;
+    boolean orbitControls = false;
+
+    boolean skipClearColor = false;
+    boolean render = false;
+    int renderNum = 0;
+    int renderMax = 400;
+    int renderMod = 20;
+    String renderPath = "../renders_1/";
+
+    public void settings() {
+        super.settings();
+        fullScreen();
+    }
 
     public void setup() {
         H.init(this);
         audio.setup();
         background(clrBg);
+        frameRate(60);
 
         effects.add(new CenterSphere(audio, this));
-        effects.add(new ColorfulButterfly(audio, this));
+        effects.add(new Atmosphere(audio, this));
+        effects.add(new CA(audio, this));
+        effects.add(new Edges(audio, this));
+        effects.add(new BlendVideo(audio, this));
 
         effects.forEach(Effect::setup);
+
+        audio.showAudioVisualizer = showUi;
     }
 
     public void draw() {
-        background(clrBg);
+        if (audio.easedAudioData[1] > 0.5) {
+            skipClearColor = true;
+            framesDelayed++;
+        } else {
+            skipClearColor = false;
+            framesDelayed = 0;
+        }
+
+        if (!skipClearColor || framesDelayed >= 40) {
+            background(clrBg);
+        }
+
         audio.update();
 
-        // image(colors, 0, 0, width, 50);
-        lights();
+        push();
+
+        if (mousePressed && orbitControls) {
+            translate(width / 2, height / 2, 0);
+            rotateX(radians(mouseY));
+            rotateY(radians(mouseX));
+            translate(-width / 2, -height / 2, 0);
+        }
 
         effects.forEach(Effect::update);
 
-        for (int i = 0; i < effects.size(); i++) {
+        pop();
+
+        if(render) {
+            showUi = false;
+            if(frameCount%renderMod==0) {
+                String formattedNum = String.format("%06d", renderNum);
+                saveFrame(renderPath + "render" + formattedNum + ".png");
+                renderNum++;
+                if(renderNum>=renderMax) exit();
+            }
+        }
+
+        if (showUi) {
             noLights();
             noTint();
             hint(DISABLE_DEPTH_TEST);
             hint(DISABLE_DEPTH_SORT);
             perspective();
-
-            textSize(18);
-            Effect effect = effects.get(i);
-            text(effect.name + ": " + effect.getVariant(), 20, (i + 1) * 22);
-
+            text("FPS: " + (int) frameRate, 20, 22);
+            for (int i = 0; i < effects.size(); i++) {
+                textSize(18);
+                Effect effect = effects.get(i);
+                text(effect.name + ": " + effect.getVariant() + " (Change variant by num" + i + ")", 20, (i + 2) * 22);
+            }
             hint(ENABLE_DEPTH_TEST);
+            audio.visualizer();
         }
 
-        audio.visualizer();
     }
 
     public void keyPressed() {
-        if (key == 'v') {
-            audio.showAudioVisualizer = !audio.showAudioVisualizer;
-        }
-        if (key == ' ') {
-            if (audio.player.isPlaying()) audio.player.pause();
-            else audio.player.play();
-        }
-        if (key == 'm') {
-            if (audio.player.isMuted()) audio.player.unmute();
-            else audio.player.mute();
-        }
-        if (key == 'p') {
-            for (int i = 0; i < audio.peakAudioData.length; i++) {
-                println(audio.peakAudioData[i]);
-            }
-        }
-        if (key == '0') {
-            effects.getFirst().nextVariant();
-        }
-        if (key == '1') {
-            effects.get(1).nextVariant();
-        }
-        if (key == '2') {
-            effects.get(2).nextVariant();
-        }
-        if (key == '3') {
-            effects.get(3).nextVariant();
-        }
-        if (key == '4') {
-            effects.get(4).nextVariant();
+        effects.forEach(Effect::keyPressed);
+
+        switch (key) {
+            case 'o':
+                orbitControls = !orbitControls;
+                break;
+            case ' ':
+                if (audio.player.isPlaying()) audio.player.pause();
+                else audio.player.play();
+                break;
+            case 'm':
+                if (audio.player.isMuted()) audio.player.unmute();
+                else audio.player.mute();
+                break;
+            case 'v':
+                audio.showAudioVisualizer = !audio.showAudioVisualizer;
+                showUi = !showUi;
+                break;
+            case 'p':
+                for (int i = 0; i < audio.peakAudioData.length; i++) {
+                    println(audio.peakAudioData[i]);
+                }
+                break;
+            case '0':
+                effects.get(0).nextVariant();
+                break;
+            case '1':
+                effects.get(1).nextVariant();
+                break;
+            case '2':
+                effects.get(2).nextVariant();
+                break;
+            case '3':
+                effects.get(3).nextVariant();
+                break;
+            case '4':
+                effects.get(4).nextVariant();
+                break;
+            default:
+                break;
         }
     }
 }

@@ -63,7 +63,7 @@ public class ColorfulButterfly extends Effect {
             obj[i].noStroke();
             obj[i].fill(colors.get((int) (osc[i].curr()), 0));
             obj[i].rotationZ(oscR[i].curr());
-            // obj[i].rotationX(oscR[i].curr());
+            obj[i].rotationX(oscR[i].curr());
             obj[i].draw(app.g);
         }
         app.pop();

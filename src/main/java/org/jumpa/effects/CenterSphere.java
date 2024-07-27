@@ -1,6 +1,7 @@
 package org.jumpa.effects;
 
 import hype.H;
+import hype.HBox;
 import hype.HSphere;
 import org.jumpa.phwrapper.Audio;
 import org.jumpa.phwrapper.Effect;
@@ -16,14 +17,24 @@ public class CenterSphere extends Effect {
 
     public void setup() {
         name = "CenterSphere";
+        c.sphereDetail(2);
     }
 
     public void update() {
         app.push();
         app.translate((app.width / 2), (app.height / 2), 0);
-        c.noStroke();
+
+        c.stroke(255, 255, 255, 200);
+        c.fill(50, 50, 50, 255);
+//        c.noStroke();
+        c.rotateX(app.PI / 2);
+        c.rotateY(app.PI / 2);
         c.anchorAt(H.CENTER);
-        c.size(audio.audioData[channel] * 1000);
+        if (audio.audioData[channel] > 0.4f) {
+            c.size(app.map(audio.audioData[channel], 0, 1, 0, 600));
+        } else {
+            c.size(0);
+        }
         c.draw(app.g);
         app.pop();
     }

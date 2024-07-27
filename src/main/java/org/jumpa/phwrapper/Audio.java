@@ -7,6 +7,7 @@ import ddf.minim.analysis.*;
 public class Audio {
     public AudioPlayer player;
 
+    boolean autoplay = true;
     boolean useInput = false;
     boolean showPeakAudioData = false;
     boolean showReferenceAudioData = false;
@@ -32,8 +33,9 @@ public class Audio {
     public float[] easedAudioData = new float[audioRange];
     public float[] peakAudioData = new float[audioRange];
 
-    public Audio(PApplet app) {
+    public Audio(PApplet app, boolean autoplay) {
         this.app = app;
+        this.autoplay = autoplay;
     }
 
     // This rescales frequencies in the unit square
@@ -77,8 +79,6 @@ public class Audio {
             fft = new FFT(in.bufferSize(), in.sampleRate());
         } else {
             player = minim.loadFile(Wrapper.dataPath + "audio/GUTSxDOOM.mp3");
-            player.loop();
-            // player.mute();
             fft = new FFT(player.bufferSize(), player.sampleRate());
         }
 
@@ -92,6 +92,10 @@ public class Audio {
 
     // runs every frame / updates
     public void update() {
+        if (app.frameCount == 1 && autoplay && !useInput) {
+            player.loop();
+        }
+
         if (useInput) {
             fft.forward(in.mix);
         } else {
@@ -100,10 +104,10 @@ public class Audio {
         for (int i = 0; i < audioRange; i++) {
             audioData[i] = amplifyFactor * fft.getAvg(i) / maxFreq * rescale((float) i / audioRange);
             audioData[i] = clamp(audioData[i], 0, 1);
-            audioData2[i] = fft.getAvg(i) * (float) (((float) ((i + 1) / 1) / audioRange) * Math.exp(1.0)) * 40;
-            audioData2[i] = clamp(audioData2[i], 0, 100) / 100;
+//            audioData2[i] = fft.getAvg(i) * (float) (((float) ((i + 1) / 1) / audioRange) * Math.exp(1.0)) * 40;
+//            audioData2[i] = clamp(audioData2[i], 0, 100) / 100;
             easedAudioData[i] += (audioData[i] - easedAudioData[i]) * audioEaseFactor;
-            if (audioData[i] > peakAudioData[i]) {
+            if (showPeakAudioData && audioData[i] > peakAudioData[i]) {
                 peakAudioData[i] = audioData[i];
             }
         }
@@ -118,11 +122,15 @@ public class Audio {
         app.hint(app.DISABLE_DEPTH_SORT);
         app.perspective();
 
-        app.rectMode(app.CENTER);
         app.push();
         app.translate((app.width / 2), (app.height / 2), 0);
         app.translate(-((float) audioRange / 2 * (barWidth + barGap)), (float) app.height / 2 - 100);
         app.noStroke();
+
+        app.fill(0, 0, 0, 245);
+        app.rect(-20, -(barMaxHeight + 50) / 2, 40 + audioRange * (barWidth + barGap), barMaxHeight + 50);
+        app.rectMode(app.CENTER);
+
         for (int i = 0; i < audioRange; i++) {
             if (showPeakAudioData) {
                 app.fill(255, 0, 0, 50);

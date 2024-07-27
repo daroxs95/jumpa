@@ -28,4 +28,7 @@ public class Effect {
     public String getVariant() {
         return "default";
     }
+
+    public void keyPressed() {
+    }
 }

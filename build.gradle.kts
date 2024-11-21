@@ -33,8 +33,23 @@ dependencies {
     implementation(files("libs/processing-4.3_library/core.jar"))
     implementation("org.jogamp.gluegen:gluegen-rt:2.4.0")
     implementation("org.jogamp.gluegen:gluegen-rt:2.4.0:natives-macosx-universal")
+    implementation("org.jogamp.gluegen:gluegen-rt:2.4.0:natives-linux-amd64")
+    implementation("org.jogamp.gluegen:gluegen-rt:2.4.0:natives-windows-amd64")
+
+
     implementation("org.jogamp.jogl:jogl-all:2.4.0")
     implementation("org.jogamp.jogl:jogl-all:2.4.0:natives-macosx-universal")
+    implementation("org.jogamp.jogl:jogl-all:2.4.0:natives-linux-amd64")
+    implementation("org.jogamp.jogl:jogl-all:2.4.0:natives-windows-amd64")
+    implementation("org.jogamp.jogl:nativewindow:2.4.0")
+    implementation("org.jogamp.jogl:nativewindow:2.4.0:natives-macosx-universal")
+    implementation("org.jogamp.jogl:nativewindow:2.4.0:natives-linux-amd64")
+    implementation("org.jogamp.jogl:nativewindow:2.4.0:natives-windows-amd64")
+    implementation("org.jogamp.jogl:newt:2.4.0")
+    implementation("org.jogamp.jogl:newt:2.4.0:natives-macosx-universal")
+    implementation("org.jogamp.jogl:newt:2.4.0:natives-linux-amd64")
+    implementation("org.jogamp.jogl:newt:2.4.0:natives-windows-amd64")
+
 
     implementation("net.compartmental.code:minim:2.2.2")
     implementation("org.bytedeco:ffmpeg-platform:5.1.2-1.5.8")

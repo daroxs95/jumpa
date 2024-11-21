@@ -25,7 +25,7 @@ Real time generative art and processing + hype gradle project template...ish
 Visuals are intended to be used with DOOMxGUTS music
 and custom Doom Eternal gameplay footage.
 
-## ⚠️ MAC USERS ⚠️
+## ⚠️ MAC USERS ⚠️ (THIS IS SOMEWHAT OUTDATED)
 - Testes on apple silicon M3 chip,
 building the fat jar and running the app works fine
 (probably rosetta is involved), 

@@ -23,6 +23,9 @@ application {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://jogamp.org/deployment/maven/")
+    }
 }
 
 java {
@@ -39,18 +42,22 @@ dependencies {
 
     implementation("org.bytedeco:javacv-platform:1.5.6")
 
+    // HYPE - Replace "latest.release" with specific version if necessary
     implementation(files("libs/HYPE.jar"))
 
+    // Processing libraries
     implementation(files("libs/processing-4.3_library/core.jar"))
-    implementation(files("libs/processing-4.3_library/gluegen-rt.jar"))
-    implementation(files("libs/processing-4.3_library/jogl-all.jar"))
 
-    implementation(files("libs/minim/minim.jar"))
-    implementation(files("libs/minim/jsminim.jar"))
-    implementation(files("libs/minim/mp3spi1.9.5.jar"))
-    implementation(files("libs/minim/jl1.0.1.jar"))
-    implementation(files("libs/minim/tritonus_aos.jar"))
-    implementation(files("libs/minim/tritonus_share.jar"))
+    implementation("org.jogamp.gluegen:gluegen-rt:2.4.0")
+    implementation("org.jogamp.gluegen:gluegen-rt:2.4.0:natives-macosx-universal")
+    implementation("org.jogamp.jogl:jogl-all:2.4.0")
+    implementation("org.jogamp.jogl:jogl-all:2.4.0:natives-macosx-universal")
+
+    // Minim and related
+    implementation("net.compartmental.code:minim:2.2.2")
+
+    implementation("org.bytedeco:ffmpeg-platform:5.1.2-1.5.8")
+
 }
 
 tasks.test {

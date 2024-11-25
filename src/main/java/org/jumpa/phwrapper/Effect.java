@@ -6,6 +6,7 @@ public class Effect {
     public Audio audio;
     public PApplet app;
     public String name = "";
+    public boolean enabled = false;
 
     public Effect(Audio audio, PApplet app) {
         this.audio = audio;
@@ -19,6 +20,12 @@ public class Effect {
 
     // runs every frame / updates
     public void update() {
+    }
+
+    public void conditionalUpdate() {
+        if (enabled) {
+            update();
+        }
     }
 
     // use it for changing audio channel used for interactivity for example

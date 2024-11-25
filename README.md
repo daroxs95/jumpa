@@ -30,3 +30,9 @@ and custom Doom Eternal gameplay footage.
 building the fat jar and running the app works fine
 (probably rosetta is involved), 
 but running the app using the gradle task `run` will probably not work.
+
+## Hot reload
+- To enable hot reload, run the app with the flag `XX:+AllowEnhancedClassRedefinition`
+and manage which effects for example are enabled/disabled in the `Main` class but inside the draw method.
+This approach is not fail-proof, but it works for now for some high level updates.
+(In intelliJ you can add this flag in the run configuration and the in build menu hit the rebuild module)

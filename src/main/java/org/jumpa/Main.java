@@ -16,6 +16,7 @@ public class Main extends Wrapper {
     int framesDelayed = 0;
     boolean showUi = false;
     boolean orbitControls = false;
+    boolean hotSwap = true;
 
     boolean skipClearColor = false;
     boolean render = false;
@@ -35,12 +36,17 @@ public class Main extends Wrapper {
         background(clrBg);
         frameRate(60);
 
-//        effects.add(new CenterSphere(audio, this));
+        effects.add(new CenterSphere(audio, this));
         effects.add(new CameraMovement(audio, this));
         effects.add(new Atmosphere(audio, this));
         effects.add(new CA(audio, this));
         effects.add(new Edges(audio, this));
-//        effects.add(new BlendVideo(audio, this));
+        effects.add(new BlendVideo(audio, this));
+
+        if (!hotSwap) {
+            // enable all effects
+            effects.forEach(effect -> effect.enabled = true);
+        }
 
         effects.forEach(Effect::setup);
 
@@ -48,6 +54,16 @@ public class Main extends Wrapper {
     }
 
     public void draw() {
+        if (hotSwap) {
+            effects.forEach(effect -> effect.enabled = false);
+//            effects.get(0).enabled = true; // CenterSphere
+            effects.get(1).enabled = true; // CameraMovement
+            effects.get(2).enabled = true; // Atmosphere
+            effects.get(3).enabled = true; // CA
+            effects.get(4).enabled = true; // Edges
+//            effects.get(5).enabled = true; // BlendVideo
+        }
+
         if (audio.easedAudioData[1] > 0.5) {
             skipClearColor = true;
             framesDelayed++;
@@ -71,7 +87,7 @@ public class Main extends Wrapper {
             translate(-width / 2, -height / 2, 0);
         }
 
-        effects.forEach(Effect::update);
+        effects.forEach(Effect::conditionalUpdate);
 
         pop();
 
@@ -112,7 +128,8 @@ public class Main extends Wrapper {
                 break;
             case ' ':
                 if (audio.player.isPlaying()) audio.player.pause();
-                else audio.player.play();
+//                else audio.player.play();
+                else audio.player.loop();
                 break;
             case 'm':
                 if (audio.player.isMuted()) audio.player.unmute();

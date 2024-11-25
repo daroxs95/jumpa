@@ -35,11 +35,12 @@ public class Main extends Wrapper {
         background(clrBg);
         frameRate(60);
 
-        effects.add(new CenterSphere(audio, this));
+//        effects.add(new CenterSphere(audio, this));
+        effects.add(new CameraMovement(audio, this));
         effects.add(new Atmosphere(audio, this));
         effects.add(new CA(audio, this));
         effects.add(new Edges(audio, this));
-        effects.add(new BlendVideo(audio, this));
+//        effects.add(new BlendVideo(audio, this));
 
         effects.forEach(Effect::setup);
 
@@ -74,13 +75,13 @@ public class Main extends Wrapper {
 
         pop();
 
-        if(render) {
+        if (render) {
             showUi = false;
-            if(frameCount%renderMod==0) {
+            if (frameCount % renderMod == 0) {
                 String formattedNum = String.format("%06d", renderNum);
                 saveFrame(renderPath + "render" + formattedNum + ".png");
                 renderNum++;
-                if(renderNum>=renderMax) exit();
+                if (renderNum >= renderMax) exit();
             }
         }
 

@@ -16,8 +16,8 @@ public class Debris extends Effect {
     float tempRadius = 0;
     int framesTilFullRadius = 5;
     int framesTilGrow = 10;
-    float orbZSpeed = 2.5f;
-    float orbYSpeed = 1.5f;
+    float orbZSpeed = 0.0f;
+    float orbYSpeed = 0.0f;
     int[] bounceChannel;
 
     public Debris(Audio audio, PApplet app, int numItems, int orbRadius) {
@@ -34,7 +34,7 @@ public class Debris extends Effect {
 
         for (int i = 0; i < numItems; i++) {
             objs[i] = new HSphere();
-            objs[i].size(3);
+            objs[i].size(4);
             objs[i].sphereDetail(1);
 
             orbs[i] = new HOrbiter3D();
@@ -45,7 +45,6 @@ public class Debris extends Effect {
             orbs[i].zAngle((int) app.random(360));
             orbs[i].yAngle((int) app.random(360));
 
-//            bounceChannel[i] = (int) app.random(0, audio.audioRange - 1);
             bounceChannel[i] = 5;
         }
     }

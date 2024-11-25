@@ -78,7 +78,7 @@ public class Audio {
             in = minim.getLineIn(Minim.MONO);
             fft = new FFT(in.bufferSize(), in.sampleRate());
         } else {
-            player = minim.loadFile(Wrapper.dataPath + "audio/GUTSxDOOM.mp3");
+            player = minim.loadFile(Wrapper.dataPath + "audio/song.mp3");
             fft = new FFT(player.bufferSize(), player.sampleRate());
         }
 

@@ -20,7 +20,7 @@ public class BlendVideo extends Effect {
     public void setup() {
         name = "BlendVideo";
         video = new Video(audio, app, false);
-        videoFilePath = Wrapper.dataPath + "videos/1.mp4";
+        videoFilePath = Wrapper.dataPath + "videos/video.mp4";
 
         app.println(videoFilePath);
 
